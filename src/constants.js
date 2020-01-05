@@ -1,0 +1,17 @@
+export const STATUS_PENDING = 'pending';
+export const STATUS_ERROR = 'error';
+export const STATUS_SUCCESS = 'success';
+
+export const ACTION_LOGIN = 'login';
+export const CREATE_COLLECTION = 'create-collection';
+export const CREATE_CARD_IN_NEW_COLLECTION = 'create-card-in-new-collection';
+export const CREATE_CARD_IN_COLLECTION = 'create-card-in-collection';
+export const UPDATE_CARD_IN_COLLECTION = 'update-card-in-collection';
+export const FETCH_COLLECTIONS = 'fetch-collections';
+export const VIEW_COLLECTION = 'view-collection';
+export const UPDATE_COLLECTION = 'update-collection';
+export const ADD_CARD_TO_COLLECTION = 'add-card-to-collection';
+export const REVIEW_COLLECTION = 'review-collection';
+export const ANSWER_MATCH = 'answer-match';
+export const REVIEW_CARD = 'review-card';
+export const REVIEW_RESULT = 'review-result';
