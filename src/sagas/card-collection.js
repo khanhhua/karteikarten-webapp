@@ -8,7 +8,7 @@ import {
   VIEW_COLLECTION,
   STATUS_ERROR,
   STATUS_PENDING,
-  STATUS_SUCCESS, UPDATE_CARD_IN_COLLECTION
+  STATUS_SUCCESS, UPDATE_CARD_IN_COLLECTION, COPY_CARD, MOVE_CARD
 } from '../constants';
 import { get, patch, post } from './utils';
 import { replace } from 'react-router-redux';
@@ -114,6 +114,68 @@ function* doUpdateCardInCollection(action) {
   });
 }
 
+function* doCopyCardToCollection(action) {
+  const { type, cardId, toCollectionId } = action;
+
+  const { collection } = yield get(`http://localhost:8080/collections/${toCollectionId}`);
+  if (!collection) {
+    yield put({ type: COPY_CARD, status: STATUS_ERROR, error: 'Collection not found' });
+    return;
+  }
+  const collectionPayload = yield patch(`http://localhost:8080/collections/${toCollectionId}`, {
+    ...collection,
+    item_ids: collection.item_ids.concat(cardId),
+  });
+  if (!collectionPayload.ok) {
+    yield put({ type: COPY_CARD, status: STATUS_ERROR, error: collectionPayload.error });
+    return;
+  }
+
+  yield put({
+    type,
+    status: STATUS_SUCCESS,
+    collection: collectionPayload.collection,
+  });
+}
+
+function* doMoveCardBetweenCollections(action) {
+  const { type, cardId, fromCollectionId, toCollectionId } = action;
+
+  const { collection: fromCollection } = yield get(`http://localhost:8080/collections/${fromCollectionId}`);
+  if (!fromCollection) {
+    yield put({ type: MOVE_CARD, status: STATUS_ERROR, error: 'Collection not found' });
+    return;
+  }
+
+  const { collection: toCollection } = yield get(`http://localhost:8080/collections/${toCollectionId}`);
+  if (!toCollection) {
+    yield put({ type: MOVE_CARD, status: STATUS_ERROR, error: 'Collection not found' });
+    return;
+  }
+  const fromCollectionPayload = yield patch(`http://localhost:8080/collections/${fromCollectionId}`, {
+    ...fromCollection,
+    item_ids: fromCollection.item_ids.filter(item => item !== cardId),
+  });
+  if (!fromCollectionPayload.ok) {
+    yield put({ type: COPY_CARD, status: STATUS_ERROR, error: fromCollectionPayload.error });
+    return;
+  }
+
+  const toCollectionPayload = yield patch(`http://localhost:8080/collections/${toCollectionId}`, {
+    ...toCollection,
+    item_ids: toCollection.item_ids.concat(cardId),
+  });
+  if (!toCollectionPayload.ok) {
+    yield put({ type: COPY_CARD, status: STATUS_ERROR, error: toCollectionPayload.error });
+    return;
+  }
+
+  yield put({
+    type,
+    status: STATUS_SUCCESS,
+  });
+}
+
 export default function* () {
   yield takeEvery(({ type, status }) => type === CREATE_COLLECTION && status === STATUS_PENDING, doCreateCollection);
   yield takeEvery(({ type, status }) => (type === CREATE_CARD_IN_NEW_COLLECTION || type === CREATE_CARD_IN_COLLECTION)
@@ -122,4 +184,6 @@ export default function* () {
   yield takeEvery(({ type, status }) => type === FETCH_COLLECTIONS && status === STATUS_PENDING, doFetchCollections);
   yield takeEvery(({ type, status }) => type === VIEW_COLLECTION && status === STATUS_PENDING, doViewCollection);
   yield takeEvery(({ type, status }) => type === UPDATE_COLLECTION && status === STATUS_PENDING, doUpdateCollection);
+  yield takeEvery(({ type, status }) => type === COPY_CARD && status === STATUS_PENDING, doCopyCardToCollection);
+  yield takeEvery(({ type, status }) => type === MOVE_CARD && status === STATUS_PENDING, doMoveCardBetweenCollections);
 }

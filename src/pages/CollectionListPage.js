@@ -27,9 +27,9 @@ const CollectionListPage = ({ dispatch, collections }) => {
                 onClick={() => dispatch(push('/create-collection'))}
               >Create Collection</Button>
             </Row>
-            <ListGroup className='pt-3'>
+            <ListGroup className='pt-3' flush>
               {collections.map(collection => (
-                <ListGroupItem>
+                <ListGroupItem className='pl-0 pr-0'>
                   <ButtonGroup className='float-right'>
                     <Button
                       size='sm'
