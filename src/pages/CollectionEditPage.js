@@ -13,6 +13,8 @@ import {
   UPDATE_CARD_IN_COLLECTION,
   MOVE_CARD,
   COPY_CARD,
+  CLONE_CARD,
+  CARD_ACTION_COPY, CARD_ACTION_MOVE, CARD_ACTION_CLONE,
 } from '../constants';
 import {
   Navbar, Nav, NavItem, NavLink,
@@ -38,6 +40,7 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
     setCollection(editedCollection);
     setCardModalShown(false);
     setEditCardModalShown(false);
+    setCardActionsModalShown(false);
   }, [editedCollection]);
 
   if (!(collection && collection.items)) {
@@ -137,7 +140,7 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
           card={editCard}
           onClose={() => setCardActionsModalShown(false)}
           onAccept={({ action, cardId, collectionId }) => {
-            if (action === 'MOVE') {
+            if (action === CARD_ACTION_MOVE) {
               dispatch({
                 type: MOVE_CARD,
                 status: STATUS_PENDING,
@@ -145,12 +148,19 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
                 fromCollectionId: editedCollection.id,
                 toCollectionId: collectionId
               });
-            } else if (action === 'COPY') {
+            } else if (action === CARD_ACTION_COPY) {
               dispatch({
                 type: COPY_CARD,
                 status: STATUS_PENDING,
                 cardId,
                 toCollectionId: collectionId
+              });
+            } else if (action === CARD_ACTION_CLONE) {
+              dispatch({
+                type: CLONE_CARD,
+                status: STATUS_PENDING,
+                cardId,
+                toCollectionId: editedCollection.id,
               });
             }
           }}

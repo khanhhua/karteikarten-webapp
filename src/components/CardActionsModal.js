@@ -8,8 +8,11 @@ import {
 } from 'reactstrap';
 import { get } from '../sagas/utils';
 
-const CARD_ACTION_MOVE = 'MOVE';
-const CARD_ACTION_COPY = 'COPY';
+import {
+  CARD_ACTION_MOVE,
+  CARD_ACTION_COPY,
+  CARD_ACTION_CLONE,
+} from '../constants';
 
 const CardActionsModal = ({ dispatch, card, onAccept, onClose }) => {
   const [choice, setChoice] = useState(null);
@@ -44,6 +47,17 @@ const CardActionsModal = ({ dispatch, card, onAccept, onClose }) => {
                     fetchCollections().then(({ collections }) => setCollections(collections));
                   }}
                 /> Copy
+              </label>
+            </div>
+            <div className='form-check-inline'>
+              <label className='form-check-label'>
+                <Input
+                  type='radio' className='form-check-input' name='action'
+                  onClick={() => {
+                    setChoice(CARD_ACTION_CLONE);
+                    setCollections(null);
+                  }}
+                /> Clone
               </label>
             </div>
           </FormGroup>

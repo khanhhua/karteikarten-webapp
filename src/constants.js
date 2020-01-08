@@ -17,3 +17,8 @@ export const REVIEW_CARD = 'review-card';
 export const REVIEW_RESULT = 'review-result';
 export const MOVE_CARD = 'move-card';
 export const COPY_CARD = 'copy-card';
+export const CLONE_CARD = 'clone-card';
+
+export const CARD_ACTION_MOVE = 'MOVE';
+export const CARD_ACTION_COPY = 'COPY';
+export const CARD_ACTION_CLONE = 'CLONE';

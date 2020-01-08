@@ -1,4 +1,4 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, select, takeEvery } from 'redux-saga/effects';
 import {
   CREATE_CARD_IN_NEW_COLLECTION,
   CREATE_CARD_IN_COLLECTION,
@@ -8,7 +8,7 @@ import {
   VIEW_COLLECTION,
   STATUS_ERROR,
   STATUS_PENDING,
-  STATUS_SUCCESS, UPDATE_CARD_IN_COLLECTION, COPY_CARD, MOVE_CARD
+  STATUS_SUCCESS, UPDATE_CARD_IN_COLLECTION, COPY_CARD, MOVE_CARD, CLONE_CARD
 } from '../constants';
 import { get, patch, post } from './utils';
 import { replace } from 'react-router-redux';
@@ -116,6 +116,7 @@ function* doUpdateCardInCollection(action) {
 
 function* doCopyCardToCollection(action) {
   const { type, cardId, toCollectionId } = action;
+  const editedCollectionId = yield select(state => state.coreData.editCollection.id);
 
   const { collection } = yield get(`http://localhost:8080/collections/${toCollectionId}`);
   if (!collection) {
@@ -136,6 +137,48 @@ function* doCopyCardToCollection(action) {
     status: STATUS_SUCCESS,
     collection: collectionPayload.collection,
   });
+
+  yield doViewCollection({ collectionId: editedCollectionId });
+}
+
+function* doCloneCardToCollection(action) {
+  const { type, cardId, toCollectionId } = action;
+
+  const { card } = yield get(`http://localhost:8080/cards/${cardId}`);
+  if (!card) {
+    yield put({ type: CLONE_CARD, status: STATUS_ERROR, error: 'Card not found' });
+    return;
+  }
+  const { card: { id: clonedId } = {} } = yield post('http://localhost:8080/cards', {
+    front: card.front,
+    back: card.back,
+  });
+  if (!clonedId) {
+    yield put({ type: CLONE_CARD, status: STATUS_ERROR, error: 'Card not found' });
+    return;
+  }
+
+  const { collection } = yield get(`http://localhost:8080/collections/${toCollectionId}`);
+  if (!collection) {
+    yield put({ type: CLONE_CARD, status: STATUS_ERROR, error: 'Collection not found' });
+    return;
+  }
+  const collectionPayload = yield patch(`http://localhost:8080/collections/${toCollectionId}`, {
+    ...collection,
+    item_ids: collection.item_ids.map(item => item === cardId ? clonedId : item),
+  });
+  if (!collectionPayload.ok) {
+    yield put({ type: CLONE_CARD, status: STATUS_ERROR, error: collectionPayload.error });
+    return;
+  }
+
+  yield put({
+    type,
+    status: STATUS_SUCCESS,
+    collection: collectionPayload.collection,
+  });
+
+  yield doViewCollection({ collectionId: toCollectionId });
 }
 
 function* doMoveCardBetweenCollections(action) {
@@ -174,6 +217,8 @@ function* doMoveCardBetweenCollections(action) {
     type,
     status: STATUS_SUCCESS,
   });
+
+  yield doViewCollection({ collectionId: fromCollectionId });
 }
 
 export default function* () {
@@ -186,4 +231,5 @@ export default function* () {
   yield takeEvery(({ type, status }) => type === UPDATE_COLLECTION && status === STATUS_PENDING, doUpdateCollection);
   yield takeEvery(({ type, status }) => type === COPY_CARD && status === STATUS_PENDING, doCopyCardToCollection);
   yield takeEvery(({ type, status }) => type === MOVE_CARD && status === STATUS_PENDING, doMoveCardBetweenCollections);
+  yield takeEvery(({ type, status }) => type === CLONE_CARD && status === STATUS_PENDING, doCloneCardToCollection);
 }
