@@ -4,7 +4,7 @@ import {
   FETCH_COLLECTIONS,
   VIEW_COLLECTION,
   STATUS_PENDING,
-  STATUS_SUCCESS, CREATE_CARD_IN_COLLECTION, UPDATE_CARD_IN_COLLECTION
+  STATUS_SUCCESS, CREATE_CARD_IN_COLLECTION, UPDATE_CARD_IN_COLLECTION, FETCH_RECENT_COLLECTIONS
 } from '../constants';
 
 const initialState = {
@@ -70,7 +70,8 @@ export default (state=initialState, action) => {
       }
       return state;
     }
-    case FETCH_COLLECTIONS: {
+    case FETCH_COLLECTIONS:
+    case FETCH_RECENT_COLLECTIONS: {
       if (action.status === STATUS_SUCCESS) {
         return {
           ...state,

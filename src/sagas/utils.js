@@ -30,3 +30,15 @@ export async function patch(url, body) {
 export async function get(url) {
   return request(url, 'get');
 }
+
+export const make = (baseUrl) => ({
+  post(path, body) {
+    return post(`${baseUrl}${path}`, body);
+  },
+  patch(path, body) {
+    return patch(`${baseUrl}${path}`, body);
+  },
+  get(path) {
+    return get(`${baseUrl}${path}`);
+  }
+});

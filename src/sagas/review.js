@@ -7,15 +7,18 @@ import {
   STATUS_PENDING,
   STATUS_SUCCESS,
 } from '../constants';
-import { get, patch } from './utils';
+import { make } from './utils';
+
+const { get, patch } = make(process.env.REACT_APP_API_BASE_URL);
 
 function* doReviewCollection(action) {
   const { collectionId } = action;
-  const collectionPayload = yield get(`http://localhost:8080/collections/${collectionId}`);
+  const collectionPayload = yield get(`/collections/${collectionId}`);
   if (!collectionPayload.ok) {
     yield put({ type: REVIEW_COLLECTION, status: STATUS_ERROR, error: collectionPayload.error });
     return;
   }
+  yield patch(`/me/recent-collections`, { collection_id: collectionId });
 
   const { items } = collectionPayload.collection;
   items.sort(() => Math.round(Math.random() * 2 - 1));
@@ -59,7 +62,7 @@ function* doAnswerMatch(action) {
     : {
       wrongs: 1,
     };
-  const scorecardPayload = yield patch(`http://localhost:8080/me/scorecard/${card.id}`, payload);
+  const scorecardPayload = yield patch(`/me/scorecard/${card.id}`, payload);
   if (!scorecardPayload.ok) {
     yield put({ type: ANSWER_MATCH, status: STATUS_ERROR, error: scorecardPayload.error });
     return;

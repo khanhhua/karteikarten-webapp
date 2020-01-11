@@ -7,7 +7,7 @@ import { ACTION_LOGIN, STATUS_ERROR, STATUS_PENDING } from '../constants';
 const LoginPage = ({ dispatch }) => (
   <div className='container-fluid'>
     <div className='row justify-content-center'>
-      <div className='col-5'>
+      <div className='col-7 karteikarten-login'>
         <h1>Login</h1>
         <GoogleLogin
           // buttonText='Login with Google'

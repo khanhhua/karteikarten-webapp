@@ -48,7 +48,7 @@ const CollectionReviewPage = ({ dispatch, collection, cardIndex = 0, lastScoreca
       </Navbar>
       <div className='container'>
         <Row className='justify-content-center'>
-          <div className='col-12 col-sm-8'>
+          <div className='col-12 col-sm-10'>
             <h1 className='page-title'>Review</h1>
             {lastScorecard && !complete &&
             <Row>
