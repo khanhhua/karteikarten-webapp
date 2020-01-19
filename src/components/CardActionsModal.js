@@ -7,7 +7,6 @@ import {
   Input,
 } from 'reactstrap';
 import { get } from '../sagas/utils';
-
 import {
   CARD_ACTION_MOVE,
   CARD_ACTION_COPY,
@@ -17,7 +16,7 @@ import {
 const CardActionsModal = ({ dispatch, card, onAccept, onClose }) => {
   const [choice, setChoice] = useState(null);
   const [collections, setCollections] = useState(null);
-  const fetchCollections = useCallback(() => get('http://localhost:8080/collections'), []);
+  const fetchCollections = useCallback(() => get('/collections'), []);
   const [collectionId, setCollectionId] = useState(null);
 
   return (

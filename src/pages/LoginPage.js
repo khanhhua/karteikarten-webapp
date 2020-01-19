@@ -4,15 +4,17 @@ import GoogleLogin from 'react-google-login';
 
 import { ACTION_LOGIN, STATUS_ERROR, STATUS_PENDING } from '../constants';
 
+const GOOGLE_OAUTH_CLIENT_ID = process.env.REACT_APP_GOOGLE_OATH_CLIENT_ID || '166406152582-k33pgvfgfc0e4u0ujsgak5ps2ps66d46.apps.googleusercontent.com';
+
 const LoginPage = ({ dispatch }) => (
   <div className='container-fluid'>
     <div className='row justify-content-center'>
       <div className='col-7 karteikarten-login'>
         <h1>Login</h1>
         <GoogleLogin
-          // buttonText='Login with Google'
+          buttonText='Login with Google'
           approvalPrompt='force'
-          clientId={'166406152582-k33pgvfgfc0e4u0ujsgak5ps2ps66d46.apps.googleusercontent.com'}
+          clientId={GOOGLE_OAUTH_CLIENT_ID}
           scope='profile email'
           onSuccess={(authData) => dispatch({ type: ACTION_LOGIN, status: STATUS_PENDING, authData })}
           onFailure={(authData) => dispatch({ type: ACTION_LOGIN, status: STATUS_ERROR, authData })}

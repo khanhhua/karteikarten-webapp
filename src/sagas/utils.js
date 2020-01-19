@@ -1,15 +1,21 @@
 async function request(url, method, body=null) {
   const accessToken = localStorage.getItem('access_token');
 
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(accessToken ? {
+        Authorization: `Bearer ${accessToken}`,
+    } : {})
+  };
+
+  if (body instanceof FormData) {
+    delete headers['Content-Type'];
+  }
+
   const response = await fetch(url, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(accessToken ? {
-        Authorization: `Bearer ${accessToken}`,
-      } : {})
-    },
-    body: body && JSON.stringify(body),
+    headers,
+    body: headers['Content-Type'] === 'application/json' ? (body && JSON.stringify(body)) : body,
   });
 
   if (response.status < 500) {

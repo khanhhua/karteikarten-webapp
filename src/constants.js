@@ -17,6 +17,8 @@ export const REVIEW_COLLECTION = 'review-collection';
 export const ANSWER_MATCH = 'answer-match';
 export const REVIEW_CARD = 'review-card';
 export const REVIEW_RESULT = 'review-result';
+export const UPLOAD_ASSET = 'upload-asset';
+
 export const MOVE_CARD = 'move-card';
 export const COPY_CARD = 'copy-card';
 export const CLONE_CARD = 'clone-card';

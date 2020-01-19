@@ -5,6 +5,7 @@ import auth from './auth';
 import coreData from './card-collection';
 import review from './review';
 import network from './network';
+import media from './media';
 
 export default combineReducers({
   routing: routerReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   auth,
   coreData,
   review,
+  media,
 });

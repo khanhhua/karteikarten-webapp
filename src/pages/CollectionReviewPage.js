@@ -65,7 +65,12 @@ const CollectionReviewPage = ({ dispatch, collection, cardIndex = 0, lastScoreca
             }
             {!complete &&
             <div className='w-100 p-3 p-sm-5 karteikarten-card'>
-              <h3 className='display-4 mb-5 text-center font-weight-bold'>{card.front}</h3>
+              <h3 className={`display-4 text-center font-weight-bold ${(!(card.media && card.media.url)) && 'mb-5'}`}>{card.front}</h3>
+              {card.media && card.media.url &&
+              <Row className="justify-content-center mb-5">
+                <img src={card.media.url} />
+              </Row>
+              }
               <Row key={card.id}>
                 {card.choices.map((choice) => (
                   <Button

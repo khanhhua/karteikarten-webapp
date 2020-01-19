@@ -122,6 +122,7 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
         </div>
         {cardModalShown &&
         <CardModal
+          mediaContext="card"
           onClose={() => setCardModalShown(false)}
           onSave={(card) => {
             dispatch({ type: CREATE_CARD_IN_COLLECTION, status: STATUS_PENDING, collection, card });
@@ -129,6 +130,7 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
         />}
         {editCardModalShown && editCard &&
         <CardModal
+          mediaContext="card"
           card={editCard}
           onClose={() => setEditCardModalShown(false)}
           onSave={(card) => {
