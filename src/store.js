@@ -7,7 +7,8 @@ import appHistory from './appHistory';
 import rootReducer from './reducers';
 import rootSaga from "./sagas";
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ shouldHotReload: false }) || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ shouldHotReload: false }) : compose;
 
 const sagaMiddleware = createSagaMiddleware();
 const routerMW = routerMiddleware(appHistory);
