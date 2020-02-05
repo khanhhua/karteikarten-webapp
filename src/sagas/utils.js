@@ -33,6 +33,10 @@ export async function patch(url, body) {
   return request(url, 'patch', body);
 }
 
+export async function put(url, body) {
+  return request(url, 'put', body);
+}
+
 export async function get(url) {
   return request(url, 'get');
 }
@@ -43,6 +47,9 @@ export const make = (baseUrl) => ({
   },
   patch(path, body) {
     return patch(`${baseUrl}${path}`, body);
+  },
+  put(path, body) {
+    return put(`${baseUrl}${path}`, body);
   },
   get(path) {
     return get(`${baseUrl}${path}`);

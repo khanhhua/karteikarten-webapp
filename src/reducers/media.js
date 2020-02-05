@@ -1,4 +1,4 @@
-import { STATUS_PENDING, STATUS_SUCCESS, UPLOAD_ASSET } from '../constants';
+import { ROTATE_IMAGE_LEFT, ROTATE_IMAGE_RIGHT, STATUS_PENDING, STATUS_SUCCESS, UPLOAD_ASSET } from '../constants';
 
 const initialState = {
   globalContext: {},
@@ -14,7 +14,9 @@ export default (state=initialState, action) => {
   }
 
   switch (action.type) {
-    case UPLOAD_ASSET: {
+    case UPLOAD_ASSET:
+    case ROTATE_IMAGE_LEFT:
+    case ROTATE_IMAGE_RIGHT: {
       return {
         ...state,
         // TODO Remove items if there are too many

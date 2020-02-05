@@ -18,6 +18,8 @@ export const ANSWER_MATCH = 'answer-match';
 export const REVIEW_CARD = 'review-card';
 export const REVIEW_RESULT = 'review-result';
 export const UPLOAD_ASSET = 'upload-asset';
+export const ROTATE_IMAGE_LEFT = 'rotate-image-left';
+export const ROTATE_IMAGE_RIGHT = 'rotate-image-right';
 
 export const MOVE_CARD = 'move-card';
 export const COPY_CARD = 'copy-card';

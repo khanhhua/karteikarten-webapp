@@ -28,10 +28,11 @@
     "sass": "^1.24.0"
   },
   "scripts": {
-    "start": "REACT_APP_API_BASE_URL=http://localhost:8080 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "cp -R build/* ../karteikarten-api/static/"
   },
   "eslintConfig": {
     "extends": "react-app"

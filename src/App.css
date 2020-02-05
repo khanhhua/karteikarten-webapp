@@ -17,3 +17,13 @@
 .karteikarten-login {
     margin-top: 25%;
 }
+
+.card-media {
+
+}
+
+.card-media .card-media-controls {
+    width: 100%;
+    position: absolute;
+    bottom: 3em;
+}

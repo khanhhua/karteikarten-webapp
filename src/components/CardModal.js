@@ -3,9 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Row, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
+  ButtonGroup,
 } from 'reactstrap';
 import { useDropzone } from 'react-dropzone';
-import { STATUS_PENDING, UPLOAD_ASSET } from '../constants';
+import { faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  STATUS_PENDING,
+  UPLOAD_ASSET,
+  ROTATE_IMAGE_LEFT,
+  ROTATE_IMAGE_RIGHT,
+} from '../constants';
 
 const CardModal = ({ dispatch, media, mediaContext, card: editCard, onSave, onClose }) => {
   const [ card, setCard ] = useState(editCard);
@@ -20,6 +28,16 @@ const CardModal = ({ dispatch, media, mediaContext, card: editCard, onSave, onCl
       mediaContext,
       file: acceptedFiles[0] });
   }, []);
+  const onRotateLeft = useCallback((e) => {
+    e.stopPropagation();
+    const editedMedia = media ? media : { id: editCard.media_id, ...editCard.media };
+    dispatch({ type: ROTATE_IMAGE_LEFT, status: STATUS_PENDING, mediaContext, media: editedMedia });
+  });
+  const onRotateRight = useCallback((e) => {
+    e.stopPropagation();
+    const editedMedia = media ? media : { id: editCard.media_id, ...editCard.media };
+    dispatch({ type: ROTATE_IMAGE_RIGHT, status: STATUS_PENDING, mediaContext, media: editedMedia });
+  });
   const {getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop });
 
   useEffect(() => {
@@ -65,13 +83,25 @@ const CardModal = ({ dispatch, media, mediaContext, card: editCard, onSave, onCl
                 <p className="m-0">Drop in a picture or sound file</p>
             }
             {(editCard && editCard.media && editCard.media.url) ?
-              <Row className="justify-content-center">
-                <img src={editCard.media.url} />
+              <Row className="justify-content-center card-media">
+                <img className="card-media-image" src={`${editCard.media.url}?t=${Date.now()}`} />
+                <div className="card-media-controls">
+                  <ButtonGroup>
+                    <Button color="light" onClick={onRotateLeft}><FontAwesomeIcon icon={faUndo}/></Button>
+                    <Button color="light" onClick={onRotateRight}><FontAwesomeIcon icon={faRedo}/></Button>
+                  </ButtonGroup>
+                </div>
               </Row>
             :
             media ?
-              <Row className="justify-content-center">
-                <img src={media.url} />
+              <Row className="justify-content-center card-media">
+                <img className="card-media-image" src={`${media.url}?t=${Date.now()}`} />
+                <div className="card-media-controls">
+                  <ButtonGroup>
+                    <Button color="light" onClick={onRotateLeft}><FontAwesomeIcon icon={faUndo}/></Button>
+                    <Button color="light" onClick={onRotateRight}><FontAwesomeIcon icon={faRedo}/></Button>
+                  </ButtonGroup>
+                </div>
               </Row>
             :
             null

@@ -4,7 +4,7 @@ import GoogleLogin from 'react-google-login';
 
 import { ACTION_LOGIN, STATUS_ERROR, STATUS_PENDING } from '../constants';
 
-const GOOGLE_OAUTH_CLIENT_ID = process.env.REACT_APP_GOOGLE_OATH_CLIENT_ID || '166406152582-k33pgvfgfc0e4u0ujsgak5ps2ps66d46.apps.googleusercontent.com';
+const GOOGLE_OAUTH_CLIENT_ID = process.env.REACT_APP_GOOGLE_OATH_CLIENT_ID;
 
 const LoginPage = ({ dispatch }) => (
   <div className='container-fluid'>
