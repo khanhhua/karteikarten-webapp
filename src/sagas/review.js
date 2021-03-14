@@ -1,5 +1,6 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
+import uniqBy from 'lodash.uniqby';
 import {
   ANSWER_MATCH, REVIEW_CARD,
   REVIEW_COLLECTION, REVIEW_RESULT,
@@ -22,19 +23,21 @@ function* doReviewCollection(action) {
 
   const { items } = collectionPayload.collection;
   items.sort(() => Math.round(Math.random() * 2 - 1));
+  const TOTAL_OPTIONS = 4;
+  const sourceItems = uniqBy(items, 'back');
   const itemsWithChoices = items.map(item => {
-    const sourceItems = [...items];
-    const choices = new Array(Math.min(sourceItems.length - 1, 3)).fill(0).map(() => {
-      let choice;
+    const choices = new Array(Math.min(sourceItems.length - 1, TOTAL_OPTIONS)).fill(0).map(() => (
+      sourceItems[Math.floor(Math.random() * sourceItems.length)]
+    ));
 
-      do {
-        const count = sourceItems.length;
-        [choice] = sourceItems.splice(Math.floor(Math.random() * count), 1);
-      } while (choice.id === item.id);
-
-      return choice;
-    });
-    choices.splice(Math.floor(Math.random() * 3), 0, item);
+    // Replace one of the four choices with the item in question
+    // - at a random index if the item is not already included
+    // - at the index where an item with "back" matches the back of the item in question
+    let replacedIndex = choices.findIndex(choice => item.back === choice.back);
+    if (replacedIndex === -1) {
+      replacedIndex = Math.floor(Math.random() * TOTAL_OPTIONS);
+    }
+    choices.splice(replacedIndex, 1, item);
 
     return {
       ...item,
