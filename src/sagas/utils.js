@@ -26,19 +26,19 @@ async function request(url, method, body=null) {
 }
 
 export async function post(url, body) {
-  return request(url, 'post', body);
+  return request(url, 'POST', body);
 }
 
 export async function patch(url, body) {
-  return request(url, 'patch', body);
+  return request(url, 'PATCH', body);
 }
 
 export async function put(url, body) {
-  return request(url, 'put', body);
+  return request(url, 'PUT', body);
 }
 
 export async function get(url) {
-  return request(url, 'get');
+  return request(url, 'GET');
 }
 
 export const make = (baseUrl) => ({
