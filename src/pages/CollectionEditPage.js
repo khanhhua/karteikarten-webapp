@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import ListGroup from 'reactstrap/es/ListGroup';
 import ListGroupItem from 'reactstrap/es/ListGroupItem';
@@ -32,6 +32,28 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
   const [ editCardModalShown, setEditCardModalShown ] = useState(false);
   const [ editCard, setEditCard ] = useState(null);
   const [ cardActionsModalShown, setCardActionsModalShown ] = useState(false);
+
+  const updateCard = useCallback(({target: { checked }}, card, tag) => {
+    let tags;
+    if (checked) {
+      tags = [...card.tags, tag];
+    } else {
+      tags = [...card.tags];
+      tags.splice(tags.indexOf(tag), 1);
+    }
+
+    const updatedCard = {
+      ...card,
+      tags,
+    };
+
+    dispatch({
+      type: UPDATE_CARD_IN_COLLECTION,
+      status: STATUS_PENDING,
+      collection: editedCollection,
+      card: updatedCard,
+    });
+  }, [collection]);
 
   useEffect(() => {
     dispatch({ type: VIEW_COLLECTION, status: STATUS_PENDING, collectionId });
@@ -85,26 +107,38 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
                 <div className="col-9">
                   <ListGroup>
                     {(collection.items || []).map(item => (
-                      <ListGroupItem key={item.id} className='pt-1 pb-1 pr-0'>
-                        <Button
-                          className='float-right'
-                          size='sm'
-                          color='default'
-                          onClick={() => {
-                            setEditCard(item);
-                            setCardActionsModalShown(true);
-                          }}
-                        >&hellip;</Button>
-                        <Button
-                          className='float-right'
-                          size='sm'
-                          color='link'
-                          onClick={() => {
-                            setEditCard(item);
-                            setEditCardModalShown(true);
-                          }}
-                        >View</Button>
-                        {item.front}
+                      <ListGroupItem key={item.id} className='d-flex align-items-baseline pt-1 pb-1 pr-0'>
+                        <div className='flex-grow-1'>{item.front}</div>
+                        <div className='flex-grow-0'>
+                          <div className='d-inline-block'>
+                            <Label className='form-check-label pr-1'>Tags:</Label>
+                            {(collection.tags || []).map(tag => (
+                              <Label className='form-check-inline'>
+                                <Input type='checkbox'
+                                       checked={item.tags.includes(tag)}
+                                       onChange={(e) => updateCard(e, item, tag)}
+                                />
+                                {tag}
+                              </Label>
+                            ))}
+                          </div>
+                          <Button
+                            size='sm'
+                            color='link'
+                            onClick={() => {
+                              setEditCard(item);
+                              setEditCardModalShown(true);
+                            }}
+                          >View</Button>
+                          <Button
+                            size='sm'
+                            color='default'
+                            onClick={() => {
+                              setEditCard(item);
+                              setCardActionsModalShown(true);
+                            }}
+                          >&hellip;</Button>
+                        </div>
                       </ListGroupItem>
                     ))}
                   </ListGroup>
@@ -132,6 +166,7 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
         <CardModal
           mediaContext="card"
           card={editCard}
+          collection={collection}
           onClose={() => setEditCardModalShown(false)}
           onSave={(card) => {
             dispatch({ type: UPDATE_CARD_IN_COLLECTION, status: STATUS_PENDING, collection, card });

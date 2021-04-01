@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Row, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
-  ButtonGroup,
+  ButtonGroup, Col,
 } from 'reactstrap';
 import { useDropzone } from 'react-dropzone';
 import { faRedo, faUndo } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,7 @@ import {
   ROTATE_IMAGE_RIGHT,
 } from '../constants';
 
-const CardModal = ({ dispatch, media, mediaContext, card: editCard, onSave, onClose }) => {
+const CardModal = ({ dispatch, media, mediaContext, collection: {tags =[]} = {}, card: editCard, onSave, onClose }) => {
   const [ card, setCard ] = useState(editCard);
   const onDrop = useCallback((files) => {
     const acceptedFiles = (files || []).filter(() => true);
@@ -74,6 +74,29 @@ const CardModal = ({ dispatch, media, mediaContext, card: editCard, onSave, onCl
                 }}
               />
             </div>
+          </FormGroup>
+          <FormGroup row inline>
+            <Label className='col-form-label text-right col-3'>Tags</Label>
+            <Col widths={[9]} className='pt-2'>
+            {(tags || []).map(tag => (
+              <Label className='form-check'>
+                <Input type='checkbox'
+                       checked={card.tags.includes(tag)}
+                       onChange={({target: {checked}}) => {
+                         let tags;
+                         if (checked) {
+                           tags = [...card.tags, tag];
+                         } else {
+                           tags = [...card.tags];
+                           tags.splice(tags.indexOf(tag), 1);
+                         }
+                         setCard({ ...card, isPristine: false, tags });
+                       }}
+                />
+                {tag}
+              </Label>
+            ))}
+            </Col>
           </FormGroup>
           <div {...getRootProps()} className="border border-secondary bg-light text-center pt-4 pb-4">
             <input {...getInputProps()} />

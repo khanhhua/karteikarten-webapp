@@ -9,7 +9,7 @@ import { replace } from 'react-router-redux';
 const CreateCollectionPage = (
   {
     dispatch,
-    newCollection = { id: null, title: '' },
+    newCollection = { id: null, title: '', tags: '' },
   }
 ) => {
   const params = useParams();
@@ -37,23 +37,38 @@ const CreateCollectionPage = (
           <h1 className='page-title'>Create Your Collection</h1>
 
           {step === 'step-0' &&
-          <Row>
+          <>
+          <Row className='mb-2'>
             <Label className='col-form-label text-right col-3'>Title</Label>
             <Input
               className='col-7 font-weight-bold'
               value={collection.title}
               placeholder={'No name'}
               onChange={({ target: { value } }) => {
-                setCollection({ ...newCollection, title: value })
+                setCollection({ ...collection, title: value })
               }}
             />
-            <div className='col-2'>
+          </Row>
+          <Row className='mb-2'>
+            <Label className='col-form-label text-right col-3'>Tags</Label>
+            <Input
+              type='textarea'
+              className='col-7'
+              rows={2}
+              onChange={({ target: { value } }) => {
+                setCollection({ ...collection, tags: value.split(/\n+|\s+/) })
+              }}
+            />
+          </Row>
+          <Row className='mt-2'>
+            <div className='offset-3'>
               <Button
                 color='primary'
                 onClick={() => dispatch({ type: CREATE_COLLECTION, status: STATUS_PENDING, collection })}
               >Create</Button>
             </div>
           </Row>
+          </>
           }
           {step === 'step-1' &&
           <>
