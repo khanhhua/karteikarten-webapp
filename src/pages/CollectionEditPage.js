@@ -103,17 +103,34 @@ const CollectionEditPage = ({ dispatch, collection: editedCollection }) => {
                 </div>
               </FormGroup>
               <FormGroup row inline>
+                <Label className='col-form-label text-right col-3'>Tags</Label>
+                <div className='col-9'>
+                  <Input
+                    type='textarea'
+                    rows={2}
+                    placeholder={'Tags'}
+                    value={collection.tags ? collection.tags.join(' ') : ''}
+                    onChange={({ target: { value } }) => {
+                      setCollection({ ...collection, tags: value.split(/\n+|\s+/) })
+                    }}
+                    onBlur={() => {
+                      dispatch({ type: UPDATE_COLLECTION, status: STATUS_PENDING, collection })
+                    }}
+                  />
+                </div>
+              </FormGroup>
+              <FormGroup row inline>
                 <Label className='col-form-label text-right col-3'>Cards</Label>
                 <div className="col-9">
                   <ListGroup>
-                    {(collection.items || []).map(item => (
+                    {(editedCollection.items || []).map(item => (
                       <ListGroupItem key={item.id} className='d-flex align-items-baseline pt-1 pb-1 pr-0'>
                         <div className='flex-grow-1'>{item.front}</div>
                         <div className='flex-grow-0'>
                           <div className='d-inline-block'>
                             <Label className='form-check-label pr-1'>Tags:</Label>
-                            {(collection.tags || []).map(tag => (
-                              <Label className='form-check-inline'>
+                            {(editedCollection.tags || []).map(tag => (
+                              <Label className='form-check-inline' key={tag}>
                                 <Input type='checkbox'
                                        checked={item.tags.includes(tag)}
                                        onChange={(e) => updateCard(e, item, tag)}
